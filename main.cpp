@@ -8,10 +8,10 @@ using namespace std;
 
 int main()
 {
-	Scene *pSc = new Scene();
-	if(1 == pSc->parseFile()){
-		cerr << "shit\n";
-	}
-    cout << *pSc;
+	// Scene *pSc = new Scene();
+	// if(1 == pSc->parseFile()){
+	// 	cerr << "shit\n";
+	// }
+ //    cout << *pSc;
 	return 0;
 }
