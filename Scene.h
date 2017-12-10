@@ -37,6 +37,7 @@ class Scene
         void parseSphere(std::string l);
         bool meet(Point * p1, Point * p2, bool verbose);
         void traceRay(bool verbose);
+        void writeFile();
     protected:
     private:
         Camera *p_cam;

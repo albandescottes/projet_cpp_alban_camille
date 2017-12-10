@@ -287,3 +287,23 @@ void Scene::traceRay(bool verbose)
         }
 	}       
 }
+
+void Scene::writeFile()
+{
+	 std::ofstream fichier;
+	 fichier.open("image.ppm", std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
+        
+        if(fichier)  // si l'ouverture a réussi
+        {
+            fichier << "P3\n" << this->getScreen()->getRes() << " " << this->getScreen()->getRes() << "\n255\n";
+            for(int i = 0; i < this->getScreen()->getRes() ; i++){
+      			for(int j = 0; j < this->getScreen()->getRes() ; j++){
+            		fichier << this->getScreen()->getPixel(i,j)->getCol()->getR() <<
+            		 " " << this->getScreen()->getPixel(i,j)->getCol()->getG() <<
+            		 " " << this->getScreen()->getPixel(i,j)->getCol()->getB() << " ";
+            	}
+            	fichier << "\n";
+            }
+            fichier.close();  // on referme le fichier
+        }
+}

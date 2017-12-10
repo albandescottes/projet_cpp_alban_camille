@@ -25,7 +25,8 @@ int main()
 		cerr << "shit\n";
 	}
 	pSc->traceRay(false);
-	pSc->getScreen()->printPixelsValue();
+	pSc->writeFile();
+	// pSc->getScreen()->printPixelsValue();
 	// pSc->getScreen()->printPixels();
  //    cout << *pSc;
  //    Point p1(0,0,0);
