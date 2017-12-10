@@ -183,3 +183,107 @@ void Scene::parseSphere(std::string l){
 	this->addShape(sp);
 }
 
+
+bool Scene::meet(Point * p1, Point * p2, bool verbose) {
+	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
+	bool touche = false;
+	double xA = p1->getX();
+	double yA = p1->getY();
+	double zA = p1->getZ();
+
+	double xB = p2->getX();
+	double yB = p2->getY();
+	double zB = p2->getZ();
+	
+	double xC ,yC,zC;
+	
+	double delta, r1, r2;
+	/* On injecte l'equation parametrique dans l'equation de sphere.
+	 * On résout ensuite cette equation du second degré avec un discriminant.
+	 * En la développant on trouve les coef a, b et c :
+	 */
+
+	double a = (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA);
+	
+	double b ,c ,r;
+	
+	//Sphere i;
+	/* coordonnées du point final */
+	double d = -1;
+	
+	for(int e=0;e < (int)this->shape.size();e++){
+		
+		//i = this->shape[e];
+		
+		xC = this->shape[e]->getPt()->getX();
+		yC = this->shape[e]->getPt()->getY();
+		zC = this->shape[e]->getPt()->getZ();
+		
+		r = this->shape[e]->getRayon();
+		
+		b =	2*(	(xB-xA)*(xA-xC) + (yB-yA)*(yA-yC) + (zB-zA)*(zA-zC) );
+		c =	(xA-xC)*(xA-xC)	+ (yA-yC)*(yA-yC) + (zA-zC)*(zA-zC)	- (r * r);	
+
+		delta = b*b - 4*a*c;
+		// std::cout << "delta" << delta << std::endl;
+		if (delta>0) {
+
+			r1 = (-b - sqrt(delta))/(2*a);
+			r2 = (-b + sqrt(delta))/(2*a);
+			
+			if (r1>=0 && r1*r1 >= (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA)) {
+				if (d==-1)
+					d=r1;
+				//bonnn
+			}
+			
+			if (delta > 0) {
+			
+				
+				if (r2 >= 0 && r2*r2 >= (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA) && r2 < r1) {
+					d=r2;
+				}
+			}
+		// if (d != -1) {
+		// 	// =
+		
+		// }
+			
+			// std::cout << xA+r1*(xB-xA) << std::endl;
+			// std::cout << yA+r1*(yB-yA) << std::endl;
+			// std::cout << zA+r1*(zB-zA) << std::endl;
+			
+			// std::cout << xA+r2*(xB-xA) << std::endl;
+			// std::cout << yA+r2*(yB-yA) << std::endl;
+			// std::cout << zA+r2*(zB-zA) << std::endl;
+			// std::cout << "2 racine" << std::endl;
+			touche = true;
+		}
+		else if (delta == 0 ) { 
+			if(verbose) { std::cout << "1 racine" << std::endl; }
+			touche =true;
+		}
+		else { 
+			if(verbose) { std::cout << "0 racine" << std::endl; } 
+		}
+	}
+	return touche;
+}
+
+void Scene::traceRay(bool verbose)
+{
+	for(int i = 0; i < this->getScreen()->getRes() ; i++){
+        for(int j = 0; j < this->getScreen()->getRes() ; j++){
+        	if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose) )  
+        	{
+        		if(verbose) { std::cout << "touche une sphere en [" << i << "][" << j << "]" << std::endl; }
+        		this->getScreen()->getPixel(i,j)->setCol(new Couleur(250,0,0));
+        	}
+        	else
+        	{
+        		if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
+        		this->getScreen()->getPixel(i,j)->setCol(this->getCol());
+        	}
+        }
+	}       
+}

@@ -1,5 +1,5 @@
 EXEC = main
-SOURCES = main.cpp Couleur.cpp Pixel.cpp Point.cpp Forme.cpp Sphere.cpp Camera.cpp Lumiere.cpp Scene.cpp Ecran.cpp  
+SOURCES = main.cpp Couleur.cpp Point.cpp Pixel.cpp Forme.cpp Sphere.cpp Camera.cpp Lumiere.cpp Ecran.cpp Scene.cpp   
 OBJECTS = $(SOURCES:.cpp=.o)
 CC = g++
 CFLAGS = -Wall -g -Wextra -Werror -std=c++11
@@ -9,8 +9,8 @@ CFLAGS = -Wall -g -Wextra -Werror -std=c++11
 default: $(EXEC)
  
 Couleur.o: Couleur.cpp Couleur.h
-Pixel.o: Pixel.cpp Pixel.h
 Point.o: Point.cpp Point.h
+Pixel.o: Pixel.cpp Pixel.h
 Forme.o : Forme.cpp Forme.h
 Sphere.o: Sphere.cpp Sphere.h
 Camera.o: Camera.cpp Camera.h

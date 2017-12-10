@@ -8,7 +8,7 @@ Camera::Camera() : p_pos(0)
 
 Camera::Camera(Point p) : p_pos(0)
 {
-	p_pos = new Point(p);
+	p_pos = new Point(p.getX(), p.getY(), p.getZ());
 }
 
 Camera::~Camera()

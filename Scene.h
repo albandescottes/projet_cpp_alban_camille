@@ -7,6 +7,7 @@
 #include <vector>
 #include <typeinfo>
 #include <fstream>
+#include <cmath>
 
 #ifndef SCENE_H
 #define SCENE_H
@@ -34,6 +35,8 @@ class Scene
         static Couleur parseColor(std::string l);
         static Lumiere * parseLight(std::string l);
         void parseSphere(std::string l);
+        bool meet(Point * p1, Point * p2, bool verbose);
+        void traceRay(bool verbose);
     protected:
     private:
         Camera *p_cam;
