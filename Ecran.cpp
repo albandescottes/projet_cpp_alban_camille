@@ -60,7 +60,7 @@ void Ecran::printPixels()
 {
     for(int i = 0; i < this->getRes() ; i++){
         for(int j = 0; j < this->getRes() ; j++){
-            std::cout << "pixel[" << j << "]["<< i <<"] "<< pixels[j][i] << std::endl;
+            std::cout << "pixel[" << i << "]["<< j <<"] "<< pixels[i][j] << std::endl;
         }
     }    
 }
@@ -69,10 +69,10 @@ void Ecran::printPixelsValue()
 {
     for(int i = 0; i < this->getRes() ; i++){
         for(int j = 0; j < this->getRes() ; j++){
-            if( pixels[j][i].getCol()->getR() == 80 && pixels[j][i].getCol()->getG() == 80 && pixels[j][i].getCol()->getB() == 100 ){
+            if( pixels[i][j].getCol()->getR() == 80 && pixels[i][j].getCol()->getG() == 80 && pixels[i][j].getCol()->getB() == 100 ){
                 std::cout << "_";
             }
-            else if (pixels[j][i].getCol()->getR() == 250 && pixels[j][i].getCol()->getG() == 0 && pixels[j][i].getCol()->getB() == 0 ){
+            else if (pixels[i][j].getCol()->getR() == 250 && pixels[i][j].getCol()->getG() == 0 && pixels[i][j].getCol()->getB() == 0 ){
                 std::cout << "O";
             }
             else{

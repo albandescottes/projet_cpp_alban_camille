@@ -26,8 +26,8 @@ int main()
 	}
 	pSc->traceRay(false);
 	pSc->writeFile();
-	// pSc->getScreen()->printPixelsValue();
-	// pSc->getScreen()->printPixels();
+	//pSc->getScreen()->printPixelsValue();
+	//pSc->getScreen()->printPixels();
  //    cout << *pSc;
  //    Point p1(0,0,0);
  //    Point p2(0,1,0);

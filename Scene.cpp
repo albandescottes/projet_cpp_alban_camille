@@ -184,7 +184,7 @@ void Scene::parseSphere(std::string l){
 }
 
 
-bool Scene::meet(Point * p1, Point * p2, bool verbose) {
+bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
 	bool touche = false;
 	double xA = p1->getX();
@@ -257,11 +257,18 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 			// std::cout << yA+r2*(yB-yA) << std::endl;
 			// std::cout << zA+r2*(zB-zA) << std::endl;
 			// std::cout << "2 racine" << std::endl;
+			// std::cout << *this->shape[e]->getCol() ;
+			col->setR(this->shape[e]->getCol()->getR());
+			col->setG(this->shape[e]->getCol()->getG());
+			col->setB(this->shape[e]->getCol()->getB());
 			touche = true;
 		}
 		else if (delta == 0 ) { 
+			col->setR(this->shape[e]->getCol()->getR());
+			col->setG(this->shape[e]->getCol()->getG());
+			col->setB(this->shape[e]->getCol()->getB());
 			if(verbose) { std::cout << "1 racine" << std::endl; }
-			touche =true;
+			touche = true;
 		}
 		else { 
 			if(verbose) { std::cout << "0 racine" << std::endl; } 
@@ -272,12 +279,15 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 
 void Scene::traceRay(bool verbose)
 {
+	Couleur *temp =  new Couleur();
 	for(int i = 0; i < this->getScreen()->getRes() ; i++){
         for(int j = 0; j < this->getScreen()->getRes() ; j++){
-        	if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose) )  
+        	if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp) )  
         	{
         		if(verbose) { std::cout << "touche une sphere en [" << i << "][" << j << "]" << std::endl; }
-        		this->getScreen()->getPixel(i,j)->setCol(new Couleur(250,0,0));
+        		this->getScreen()->getPixel(i,j)->getCol()->setR(temp->getR());
+        		this->getScreen()->getPixel(i,j)->getCol()->setG(temp->getG());
+        		this->getScreen()->getPixel(i,j)->getCol()->setB(temp->getB());
         	}
         	else
         	{
@@ -298,7 +308,7 @@ void Scene::writeFile()
             fichier << "P3\n" << this->getScreen()->getRes() << " " << this->getScreen()->getRes() << "\n255\n";
             for(int i = 0; i < this->getScreen()->getRes() ; i++){
       			for(int j = 0; j < this->getScreen()->getRes() ; j++){
-            		fichier << this->getScreen()->getPixel(i,j)->getCol()->getR() <<
+					fichier << this->getScreen()->getPixel(i,j)->getCol()->getR() <<
             		 " " << this->getScreen()->getPixel(i,j)->getCol()->getG() <<
             		 " " << this->getScreen()->getPixel(i,j)->getCol()->getB() << " ";
             	}
