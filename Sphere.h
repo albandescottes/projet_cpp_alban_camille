@@ -13,6 +13,7 @@ class Sphere : public Forme
         friend std::ostream& operator<<(std::ostream& os, const Sphere& sp);
         double getRayon() { return rayon; };
         void setRayon(double r) { rayon = r; };
+        bool between (Point * p1, Point * p2);
     protected:
     private:
         double rayon;

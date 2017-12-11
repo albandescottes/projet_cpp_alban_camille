@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include <math.h>
 
 Scene::Scene() : p_cam(0), p_ecran(0), p_lum(0), p_background(0)
 {
@@ -208,9 +209,11 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 	double b ,c ,r;
 	
 	//Sphere i;
-	/* coordonnées du point final */
-	double d = -1;
 	
+	/* sphere choisie et coordonnées du point final */
+	double d = -1;
+	Sphere *sph_tmp = NULL;
+		
 	for(int e=0;e < (int)this->shape.size();e++){
 		
 		//i = this->shape[e];
@@ -231,6 +234,22 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 			r1 = (-b - sqrt(delta))/(2*a);
 			r2 = (-b + sqrt(delta))/(2*a);
 			
+			
+			if (d==-1 || (d>=0 && r1<d)) {
+				if (r1>=0 && r1<r2) {
+					d=r1;
+					sph_tmp = this->shape[e];
+				}
+			}
+			else if (d==-1 || (d>=0 && r2<d)) {
+				if (r2>=0 && r2<r1) {
+					r2=d;
+					sph_tmp = this->shape[e];
+				}
+			}
+			
+			
+			/*
 			if (r1>=0 && r1*r1 >= (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA)) {
 				if (d==-1)
 					d=r1;
@@ -248,7 +267,7 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 		// 	// =
 		
 		// }
-			
+			*/
 			// std::cout << xA+r1*(xB-xA) << std::endl;
 			// std::cout << yA+r1*(yB-yA) << std::endl;
 			// std::cout << zA+r1*(zB-zA) << std::endl;
@@ -260,6 +279,15 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 			touche = true;
 		}
 		else if (delta == 0 ) { 
+			r1 = b/(2*a);
+			
+			if (d==-1 || (d>=0 && r1<d)) {
+				if (r1>=0) {
+					d=r1;
+					sph_tmp = this->shape[e];
+				}
+			}
+			
 			if(verbose) { std::cout << "1 racine" << std::endl; }
 			touche =true;
 		}
@@ -267,6 +295,26 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose) {
 			if(verbose) { std::cout << "0 racine" << std::endl; } 
 		}
 	}
+	
+	if (d!=-1) {
+		Point * contact = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
+		for(int e=0;e < (int)this->shape.size();e++){
+			if (this->shape[e]->between(contact, this->p_lum->getPt())) {
+				std::cout << "X";
+				break;
+			}
+			else std::cout << "_";
+		}
+		std::cout << std::endl;
+	}
+	else std::cout << "|";
+
+	
+	if (sph_tmp != NULL) {
+		std::cout << "";
+		
+	} else std::cout << "";
+	
 	return touche;
 }
 
