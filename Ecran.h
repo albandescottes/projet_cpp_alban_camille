@@ -15,10 +15,14 @@ class Ecran
         Point * getTRC() const { return this->p_TRC; };
         Point * getBLC() const { return this->p_BLC; };
         int getRes() { return resolution; };
+        Pixel * getPixel(int i, int j) const {return &(this->pixels[i][j]) ; };
         void setTLC(Point *a) { p_TLC = a; };
         void setTRC(Point *a) { p_TRC = a; };
         void setBLC(Point *a) { p_BLC = a; };
-        void setResolution(int r) { resolution = r; };
+        void setResolution(int r);
+        void printPixels();
+        void printPixelsValue();
+        void freeEcran();
     protected:
     private:
         Point *p_TLC, *p_TRC, *p_BLC;

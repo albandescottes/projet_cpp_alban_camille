@@ -9,7 +9,7 @@ class Couleur
     public:
         Couleur() : r(0) , g(0), b(0) {};
         Couleur(int red, int green, int blue) : r(red), g(green), b(blue) {};
-        Couleur(const Couleur &);
+        Couleur( Couleur const& col);
         virtual ~Couleur();
         friend std::ostream& operator<<(std::ostream& os, const Couleur& c);
         int getR() {return r;};
