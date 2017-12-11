@@ -1,4 +1,5 @@
 #include <iostream> 
+#include <cmath>
 
 #ifndef POINT_H
 #define POINT_H
@@ -18,6 +19,7 @@ class Point
         void setX(double xx) { x = xx;}; 
         void setY(double yy) { y = yy;}; 
         void setZ(double zz) { z = zz;}; 
+        static double calculCos(Point * centre, Point * surface, Point * lum);  
     protected:
     private:
         double x, y, z;
