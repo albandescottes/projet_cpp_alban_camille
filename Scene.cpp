@@ -246,28 +246,6 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 				}
 			}
 			
-			
-			/*
-			
-			if (r1>=0 && r1*r1 >= (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA)) {
-				if (d==-1)
-					d=r1;
-				//bonnn
-			}
-			
-			if (delta > 0) {
-			
-				
-				if (r2 >= 0 && r2*r2 >= (xB-xA)*(xB-xA) + (yB-yA)*(yB-yA) + (zB-zA)*(zB-zA) && r2 < r1) {
-					d=r2;
-				}
-			}
-		// if (d != -1) {
-		// 	// =
-		
-		// }
-			
-			*/
 			// std::cout << xA+r1*(xB-xA) << std::endl;
 			// std::cout << yA+r1*(yB-yA) << std::endl;
 			// std::cout << zA+r1*(zB-zA) << std::endl;
@@ -292,9 +270,9 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 					sph_tmp = this->shape[e];
 				}
 			}
-			col->setR(this->shape[e]->getCol()->getR());
-			col->setG(this->shape[e]->getCol()->getG());
-			col->setB(this->shape[e]->getCol()->getB());
+			//col->setR(this->shape[e]->getCol()->getR());
+			//col->setG(this->shape[e]->getCol()->getG());
+			//col->setB(this->shape[e]->getCol()->getB());
 			if(verbose) { std::cout << "1 racine" << std::endl; }
 			touche = true;
 		}
@@ -305,25 +283,35 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	}
 	
 	// quel situation on doit faire le calcul jeune homme ?
-	
-	if (d!=-1) {
-		Point * contact = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
+	Point * contact;
+	if (touche) {
+		contact  = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
 		for(int e=0;e < (int)this->shape.size();e++){
-			if (this->shape[e]->between(contact, this->p_lum->getPt())) {
-				std::cout << "X";
-				break;
-			}
-			else std::cout << "_";
+			//if(this->shape[e] != sph_tmp){
+				if (this->shape[e]->between(contact, this->p_lum->getPt())) {
+					//std::cout << "X";
+					touche = false;
+					break;
+				}
+			//else std::cout << "_";
+			//}
 		}
-		std::cout << std::endl;
 	}
-	else std::cout << "|";
+	if(touche){
+		col->setR( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt() ) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255))   ;
+		col->setG( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255));
+		col->setB( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255));
+		//col->setG(sph_tmp->getCol()->getG());
+		//col->setB(sph_tmp->getCol()->getB());
+		//std::cout << std::endl;
+	}
+	//else std::cout << "|";
 
 	
-	if (sph_tmp != NULL) {
-		std::cout << "";
+	//if (sph_tmp != NULL) {
+		//std::cout << "";
 		
-	} else std::cout << "";
+	//} else std::cout << "";
 	return touche;
 }
 
