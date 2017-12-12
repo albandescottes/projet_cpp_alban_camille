@@ -1,5 +1,4 @@
 #include "Sphere.h"
-#include <math.h>
 
 Sphere::Sphere()  : Forme() , rayon(0)
 {
@@ -22,6 +21,7 @@ std::ostream& operator<<(std::ostream& os, const Sphere& s)
 	os << *s.getPt() << "\t" << *s.getCol() << "Reflex : " << s.reflexion  << " Radius : "<< s.rayon << std::endl;
 	return os;
 }
+
 
 /* renvoie true s'il n'y a pas d'obstacle entre le point de la sphere concerné et la lumière
  * false sinon
@@ -60,7 +60,7 @@ bool Sphere::between(Point * p1, Point * p2) {
 		double r1 = (-b - sqrt(delta))/(2*a);
 		double r2 = (-b + sqrt(delta))/(2*a);
 		
-		if ((r1>=0 && r1<sqrt(a)) || (r2>=0 && r2<=sqrt(a))){
+		if ((r1>0.001 && r1<sqrt(a)) && (r2>0.001 && r2<=sqrt(a))){
 			clear = true;
 		}
 	}
@@ -68,7 +68,7 @@ bool Sphere::between(Point * p1, Point * p2) {
 	else if (delta == 0) {
 		double r1 = (-b - sqrt(delta))/(2*a);
 					
-		if (r1>=0 && r1<sqrt(a)) {
+		if (r1>0.001 && r1<sqrt(a)) {
 			clear = true;
 		}
 	}
