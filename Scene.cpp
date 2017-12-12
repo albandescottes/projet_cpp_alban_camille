@@ -186,7 +186,10 @@ void Scene::parseSphere(std::string l){
 
 bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
+	
 	bool touche = false;
+	//bool test = false;
+	
 	double xA = p1->getX();
 	double yA = p1->getY();
 	double zA = p1->getZ();
@@ -212,7 +215,7 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	double d = -1;
 	Sphere *sph_tmp = NULL;
 	
-	
+	Point * contact;
 	for(int e=0;e < (int)this->shape.size();e++){
 		
 		//i = this->shape[e];
@@ -255,9 +258,10 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 			// std::cout << zA+r2*(zB-zA) << std::endl;
 			// std::cout << "2 racine" << std::endl;
 			// std::cout << *this->shape[e]->getCol() ;
-			col->setR(this->shape[e]->getCol()->getR());
-			col->setG(this->shape[e]->getCol()->getG());
-			col->setB(this->shape[e]->getCol()->getB());
+			//col->setR(this->shape[e]->getCol()->getR());
+			//col->setG(this->shape[e]->getCol()->getG());
+			//col->setB(this->shape[e]->getCol()->getB());
+			
 			touche = true;
 		}
 		else if (delta == 0 ) { 
@@ -270,9 +274,6 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 					sph_tmp = this->shape[e];
 				}
 			}
-			//col->setR(this->shape[e]->getCol()->getR());
-			//col->setG(this->shape[e]->getCol()->getG());
-			//col->setB(this->shape[e]->getCol()->getB());
 			if(verbose) { std::cout << "1 racine" << std::endl; }
 			touche = true;
 		}
@@ -282,29 +283,52 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		
 	}
 	
+	
+	
 	// quel situation on doit faire le calcul jeune homme ?
-	Point * contact;
+	//int lol = 1;
 	if (touche) {
+		//col->setR(0);
+		//col->setG(0);
+		//col->setB(0);
+			
 		contact  = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
 		for(int e=0;e < (int)this->shape.size();e++){
 			//if(this->shape[e] != sph_tmp){
-				if (this->shape[e]->between(contact, this->p_lum->getPt())) {
-					//std::cout << "X";
+		//std::cout << lol ;
+				//if (this->shape[e]->between(contact, this->getLight()->getPt())) {
+				if (this->shape[e]->between(contact, this->getLight()->getPt() )) {
+					//std::cout << *this->shape[e]->getCol() << "touche\n";
+					col->setR(0);
+					col->setG(0);
+					col->setB(0);
+					//lol = 2;
 					touche = false;
+					//test = true;
 					break;
 				}
+			
 			//else std::cout << "_";
 			//}
+		//<<std::endl;
 		}
+	//std::cout << " ";
 	}
+	
 	if(touche){
-		col->setR( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt() ) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255))   ;
+		//std::cout << lol << "|" ;//<<std::endl;
+		col->setR( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255));
 		col->setG( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255));
 		col->setB( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255));
 		//col->setG(sph_tmp->getCol()->getG());
 		//col->setB(sph_tmp->getCol()->getB());
 		//std::cout << std::endl;
 	}
+	/*
+	if(test){
+		std::cout << lol <<  "|";
+	}
+	*/
 	//else std::cout << "|";
 
 	
@@ -327,9 +351,12 @@ void Scene::traceRay(bool verbose)
         		this->getScreen()->getPixel(i,j)->getCol()->setG(temp->getG());
         		this->getScreen()->getPixel(i,j)->getCol()->setB(temp->getB());
         	}
-        	else
+        //	else if ( (temp->getR() == 0) && (temp->getG() == 0) && (temp->getB() == 0) ){
+		//		this->getScreen()->getPixel(i,j)->setCol(new Couleur(0,0,0));
+		//	}
+			else
         	{
-        		if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
+				if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
         		this->getScreen()->getPixel(i,j)->setCol(this->getCol());
         	}
         }
