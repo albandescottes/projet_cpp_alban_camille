@@ -288,10 +288,9 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	// quel situation on doit faire le calcul jeune homme ?
 	//int lol = 1;
 	if (touche) {
-		//col->setR(0);
-		//col->setG(0);
-		//col->setB(0);
-			
+		col->setR(0);
+		col->setG(0);
+		col->setB(0);
 		contact  = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
 		for(int e=0;e < (int)this->shape.size();e++){
 			//if(this->shape[e] != sph_tmp){
@@ -317,9 +316,9 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	
 	if(touche){
 		//std::cout << lol << "|" ;//<<std::endl;
-		col->setR( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255));
-		col->setG( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255));
-		col->setB( fabs( Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255));
+		col->setR( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255 , 0.0));
+		col->setG( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255 , 0.0));
+		col->setB( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255 , 0.0));
 		//col->setG(sph_tmp->getCol()->getG());
 		//col->setB(sph_tmp->getCol()->getB());
 		//std::cout << std::endl;
