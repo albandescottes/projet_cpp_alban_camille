@@ -31,3 +31,4 @@ clean:
 
 exec:
 	./$(EXEC)
+	display image.ppm
