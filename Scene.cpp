@@ -187,6 +187,11 @@ void Scene::parseSphere(std::string l){
 bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
 	
+	col->setR(this->getCol()->getR());
+	col->setG(this->getCol()->getG());
+	col->setB(this->getCol()->getB());
+	
+	//std::cout << " dans meet " << *p2 << std::endl;
 	bool touche = false;
 	//bool test = false;
 	
@@ -343,21 +348,23 @@ void Scene::traceRay(bool verbose)
 	Couleur *temp =  new Couleur();
 	for(int i = 0; i < this->getScreen()->getRes() ; i++){
         for(int j = 0; j < this->getScreen()->getRes() ; j++){
-        	if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp) )  
-        	{
+			//if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp) )  
+        	//{
+			this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp);	
         		if(verbose) { std::cout << "touche une sphere en [" << i << "][" << j << "]" << std::endl; }
         		this->getScreen()->getPixel(i,j)->getCol()->setR(temp->getR());
         		this->getScreen()->getPixel(i,j)->getCol()->setG(temp->getG());
         		this->getScreen()->getPixel(i,j)->getCol()->setB(temp->getB());
-        	}
+        	//}
         //	else if ( (temp->getR() == 0) && (temp->getG() == 0) && (temp->getB() == 0) ){
 		//		this->getScreen()->getPixel(i,j)->setCol(new Couleur(0,0,0));
 		//	}
-			else
-        	{
-				if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
-        		this->getScreen()->getPixel(i,j)->setCol(this->getCol());
-        	}
+			//else
+        	//{
+			//	if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
+        	//	this->getScreen()->getPixel(i,j)->setCol(this->getCol());
+        	//}
+        	//std::cout << *this->getScreen()->getPixel(i,j)->getPt() << std::endl;
         }
 	}       
 }

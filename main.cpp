@@ -24,6 +24,7 @@ int main()
 	if(1 == pSc->parseFile()){
 		cerr << "shit\n";
 	}
+
 	pSc->traceRay(false);
 	pSc->writeFile();
 	//pSc->getScreen()->printPixelsValue();
