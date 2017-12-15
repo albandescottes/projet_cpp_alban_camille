@@ -48,7 +48,8 @@ void Ecran::setResolution(int r)
     //std::cout << *p_TLC << "|" << *p_TRC << "|" << *p_BLC << std::endl;
     for(int i = 0; i < this->getRes() ; i++){
         for(int j = 0; j < this->getRes() ; j++){
-            pixels[i][j].setPt(new Point(p_TLC->getX() + ((double)i/r)*(p_TRC->getX() - p_TLC->getX()) + ((double)j/r)* (p_BLC->getX() - p_TLC->getX()),
+            pixels[i][j].setPt(new Point(
+				p_TLC->getX() + ((double)i/r)*(p_TRC->getX() - p_TLC->getX()) + ((double)j/r)* (p_BLC->getX() - p_TLC->getX()),
                 p_TLC->getY() + ((double)i/r)*(p_TRC->getY() - p_TLC->getY()) + ((double)j/r)* (p_BLC->getY() - p_TLC->getY()),
                 p_TLC->getZ() + ((double)i/r)*(p_TRC->getZ() - p_TLC->getZ()) + ((double)j/r)* (p_BLC->getZ() - p_TLC->getZ())));
             pixels[i][j].setCol(new Couleur());
