@@ -22,4 +22,9 @@
 # three sphere
 # center = (90, 90, 60) ; radius = 7 ; color = (250, 0, 0) ; reflexion = 0.3
 sphere: 40 20 20 4 255 255 64 0.3
+sphere: 20 20 20 4 32 178 170 0.3
+sphere: 30 30 20 4 210 180 140 0.3
+sphere: 10 10 20 4 255 64 64 0.3
+sphere: 10 30 20 4 240 64 200 0.3
+sphere: 30 10 20 4 255 255 64 0.3
 #comm

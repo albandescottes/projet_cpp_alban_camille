@@ -36,6 +36,7 @@ class Scene
         static Lumiere * parseLight(std::string l);
         void parseSphere(std::string l);
         bool meet(Point * p1, Point * p2, bool verbose, Couleur * col);
+        void spec(Point *p1, Point *p2, std::vector<Couleur> *colSpec, std::vector<double> *coefSpec);
         void traceRay(bool verbose);
         void writeFile();
     protected:

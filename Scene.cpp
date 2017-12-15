@@ -185,7 +185,7 @@ void Scene::parseSphere(std::string l){
 
 
 bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
-		
+
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
 	
 	col->setR(this->getCol()->getR());
@@ -218,7 +218,7 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	//Sphere i;
 	/* coordonnées du point final */
 	double d = -1;
-	Sphere *sph_tmp = NULL;
+	Sphere * sph_tmp;
 	
 	Point * contact;
 	for(int e=0;e < (int)this->shape.size();e++){
@@ -231,7 +231,7 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		
 		r = this->shape[e]->getRayon();
 		
-		b =	2*(	(xB-xA)*(xA-xC) + (yB-yA)*(yA-yC) + (zB-zA)*(zA-zC) );
+		b =	2*((xB-xA)*(xA-xC) + (yB-yA)*(yA-yC) + (zB-zA)*(zA-zC) );
 		c =	(xA-xC)*(xA-xC)	+ (yA-yC)*(yA-yC) + (zA-zC)*(zA-zC)	- (r * r);	
 
 		delta = b*b - 4*a*c;
@@ -317,13 +317,36 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		//<<std::endl;
 		}
 	//std::cout << " ";
+		Point * pSpec1 = p1;
+		Point * pSpec2 = p2;
+		std::vector<Couleur> *colSpec = new std::vector<Couleur>;
+		std::vector<double> *coefSpec = new std::vector<double>;
+		coefSpec->push_back(1.0);
+		std::cout << pSpec1 << pSpec2 << colSpec << coefSpec << std::endl;
+		spec(p1, p2, colSpec, coefSpec);
+
 	}
-	
+
 	if(touche){
 		//std::cout << lol << "|" ;//<<std::endl;
+		//std::cout << p2->getX() <<";"<< p2->getY() << std::endl;
+		//std::cout << sph_tmp->getPt()->getX() << std::endl;
+		//std::cout << sph_tmp->getPt()->getY() << std::endl;
+		//std::cout << sph_tmp->getPt()->getZ() << std::endl;
+
 		col->setR( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255 , 0.0));
+
+//std::cout << p2->getX() <<";"<< p2->getY() << std::endl;
+		//std::cout << &sph_tmp << std::endl;
+
 		col->setG( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255 , 0.0));
+
+//std::cout << p2->getX() <<";"<< p2->getY() << std::endl;
+		//std::cout << &sph_tmp << std::endl;
+
 		col->setB( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255 , 0.0));
+		
+//		std::cout << "---------------------" << std::endl;
 		//col->setG(sph_tmp->getCol()->getG());
 		//col->setB(sph_tmp->getCol()->getB());
 		//std::cout << std::endl;
@@ -341,7 +364,14 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		
 	//} else std::cout << "";
 	//std::cout << col->getR() << std::endl;
+	//delete sph_tmp;
 	return touche;
+}
+
+void Scene::spec(Point *p1, Point *p2, std::vector<Couleur> *colSpec, std::vector<double> *coefSpec) {
+	std::cout << p1 << p2 << colSpec << coefSpec << std::endl;
+	if (coefSpec->back() <= 0) std::cout << "nul" << std::endl;
+	else std::cout << "ok" << std::endl;
 }
 
 void Scene::traceRay(bool verbose)
