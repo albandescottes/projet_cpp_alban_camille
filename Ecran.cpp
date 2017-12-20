@@ -73,9 +73,6 @@ void Ecran::printPixelsValue()
             if( pixels[i][j].getCol()->getR() == 80 && pixels[i][j].getCol()->getG() == 80 && pixels[i][j].getCol()->getB() == 100 ){
                 std::cout << "_";
             }
-            else if (pixels[i][j].getCol()->getR() == 250 && pixels[i][j].getCol()->getG() == 0 && pixels[i][j].getCol()->getB() == 0 ){
-                std::cout << "O";
-            }
             else{
                 std::cout << "W";
             }

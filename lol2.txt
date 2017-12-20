@@ -12,7 +12,7 @@
 30 10 10
 
 # screen horizontal resolution
-400
+200
 
 # background color
 80 80 100

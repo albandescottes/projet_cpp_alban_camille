@@ -27,11 +27,12 @@ int main()
 
 	pSc->traceRay(false);
 	pSc->writeFile();
-	//pSc->getScreen()->printPixelsValue();
-	//pSc->getScreen()->printPixels();
- //    cout << *pSc;
- //    Point p1(0,0,0);
- //    Point p2(0,1,0);
- //    pSc->meet(p1,p2);
+	
+//	pSc->getScreen()->printPixelsValue();
+//	pSc->getScreen()->printPixels();
+//  cout << *pSc;
+//  Point p1(0,0,0);
+//  Point p2(0,1,0);
+//  pSc->meet(p1,p2);
 	return 0;
 }

@@ -184,24 +184,17 @@ void Scene::parseSphere(std::string l){
 }
 
 
-bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
+Couleur * Scene::meet(Point * p1, Point * p2, bool verbose) {
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
 	
-	col->setR(this->getCol()->getR());
-	col->setG(this->getCol()->getG());
-	col->setB(this->getCol()->getB());
+	Couleur * col = new Couleur(0,0,0);
+	col->setR(this->getCol()->getR());	col->setG(this->getCol()->getG());	col->setB(this->getCol()->getB());
 	
-	//std::cout << " dans meet " << *p2 << std::endl;
 	bool touche = false;
-	//bool test = false;
 	
-	double xA = p1->getX();
-	double yA = p1->getY();
-	double zA = p1->getZ();
+	double xA = p1->getX();	double yA = p1->getY();	double zA = p1->getZ();
 
-	double xB = p2->getX();
-	double yB = p2->getY();
-	double zB = p2->getZ();
+	double xB = p2->getX();	double yB = p2->getY();	double zB = p2->getZ();
 	
 	double xC ,yC,zC;
 	
@@ -235,7 +228,6 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		c =	(xA-xC)*(xA-xC)	+ (yA-yC)*(yA-yC) + (zA-zC)*(zA-zC)	- (r * r);	
 
 		delta = b*b - 4*a*c;
-		// std::cout << "delta" << delta << std::endl;
 		if (delta>0) {
 
 			r1 = (-b - sqrt(delta))/(2*a);
@@ -253,19 +245,6 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 					sph_tmp = this->shape[e];
 				}
 			}
-			
-			// std::cout << xA+r1*(xB-xA) << std::endl;
-			// std::cout << yA+r1*(yB-yA) << std::endl;
-			// std::cout << zA+r1*(zB-zA) << std::endl;
-			
-			// std::cout << xA+r2*(xB-xA) << std::endl;
-			// std::cout << yA+r2*(yB-yA) << std::endl;
-			// std::cout << zA+r2*(zB-zA) << std::endl;
-			// std::cout << "2 racine" << std::endl;
-			// std::cout << *this->shape[e]->getCol() ;
-			//col->setR(this->shape[e]->getCol()->getR());
-			//col->setG(this->shape[e]->getCol()->getG());
-			//col->setB(this->shape[e]->getCol()->getB());
 			
 			touche = true;
 		}
@@ -285,86 +264,67 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		else { 
 			if(verbose) { std::cout << "0 racine" << std::endl; } 
 		}
-		
+
 	}
 	
-	
-	
-	// quel situation on doit faire le calcul jeune homme ?
-	//int lol = 1;
+
 	if (touche) {
 		col->setR(0);
 		col->setG(0);
 		col->setB(0);
 		contact  = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
 		for(int e=0;e < (int)this->shape.size();e++){
-			//if(this->shape[e] != sph_tmp){
-		//std::cout << lol ;
-				//if (this->shape[e]->between(contact, this->getLight()->getPt())) {
-				if (this->shape[e]->between(contact, this->getLight()->getPt() )) {
-					//std::cout << *this->shape[e]->getCol() << "touche\n";
-					col->setR(0);
-					col->setG(0);
-					col->setB(0);
-					//lol = 2;
-					touche = false;
-					//test = true;
-					break;
-				}
-			
-			//else std::cout << "_";
-			//}
-		//<<std::endl;
+			if (this->shape[e]->between(contact, this->getLight()->getPt() )) {
+				col->setR(0);
+				col->setG(0);
+				col->setB(0);
+				touche = false;
+				break;
+			}
 		}
-	//std::cout << " ";
 	}
 	
 	if(touche){
-		//std::cout << lol << "|" ;//<<std::endl;
+
 		col->setR( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255 , 0.0));
 		col->setG( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255 , 0.0));
 		col->setB( std::max(-1 * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255 , 0.0));
-		//col->setG(sph_tmp->getCol()->getG());
-		//col->setB(sph_tmp->getCol()->getB());
-		//std::cout << std::endl;
-	}
-	/*
-	if(test){
-		std::cout << lol <<  "|";
-	}
-	*/
-	//else std::cout << "|";
-
-	
-	//if (sph_tmp != NULL) {
-		//std::cout << "";
 		
-	//} else std::cout << "";
-	return touche;
+		double xI = contact->getX() - xB;
+		double yI = contact->getY() - yB;
+		double zI = contact->getZ() - zB;
+	
+		double xN = contact->getX() - sph_tmp->getPt()->getX();
+		double yN = contact->getY() - sph_tmp->getPt()->getY();
+		double zN = contact->getZ() - sph_tmp->getPt()->getZ();
+
+		double scalaireIN = xI*xN + yI*yN + zI*zN;
+	
+		double xV = contact->getX() + 2*scalaireIN*xN - xI;
+		double yV = contact->getY() + 2*scalaireIN*yN - yI;
+		double zV = contact->getZ() + 2*scalaireIN*zN - zI;
+	
+		Point * nouveauPoint = new Point(xV, yV, zV);
+	
+		col->add(meet(contact, nouveauPoint, true));
+		
+	}
+	
+	
+	std::cout << "lol" << std::endl;
+	return col;
 }
 
 void Scene::traceRay(bool verbose)
 {
-	Couleur *temp =  new Couleur();
+	Couleur *temp =  NULL;
 	for(int i = 0; i < this->getScreen()->getRes() ; i++){
         for(int j = 0; j < this->getScreen()->getRes() ; j++){
-			//if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp) )  
-        	//{
-			this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp);	
-        		if(verbose) { std::cout << "touche une sphere en [" << i << "][" << j << "]" << std::endl; }
+			temp  = this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose);	
+        		std::cout << "touche une sphere en [" << i << "][" << j << "]"<< std::endl; 
         		this->getScreen()->getPixel(i,j)->getCol()->setR(temp->getR());
         		this->getScreen()->getPixel(i,j)->getCol()->setG(temp->getG());
         		this->getScreen()->getPixel(i,j)->getCol()->setB(temp->getB());
-        	//}
-        //	else if ( (temp->getR() == 0) && (temp->getG() == 0) && (temp->getB() == 0) ){
-		//		this->getScreen()->getPixel(i,j)->setCol(new Couleur(0,0,0));
-		//	}
-			//else
-        	//{
-			//	if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
-        	//	this->getScreen()->getPixel(i,j)->setCol(this->getCol());
-        	//}
-        	//std::cout << *this->getScreen()->getPixel(i,j)->getPt() << std::endl;
         }
 	}       
 }
