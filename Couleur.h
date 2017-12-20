@@ -18,6 +18,8 @@ class Couleur
         void setR(int red) { r = red;}; 
         void setG(int green) { g = green;}; 
         void setB(int blue) { b = blue;}; 
+        void add(Couleur * c);
+        void add(double coef, Couleur * c);
     protected:
     private:
         int r;

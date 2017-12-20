@@ -184,16 +184,17 @@ void Scene::parseSphere(std::string l){
 }
 
 
-bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
+Couleur * Scene::meet(Point * p1, Point * p2, bool verbose) {
 	if(verbose) { std::cout << *p1 << *p2 << std::endl; }
+	
+	Couleur * col = new Couleur(0,0,0);
+	
 	bool touche = false;
-	double xA = p1->getX();
-	double yA = p1->getY();
-	double zA = p1->getZ();
+	bool eclaire = true;
+	
+	double xA = p1->getX();	double yA = p1->getY();	double zA = p1->getZ();
 
-	double xB = p2->getX();
-	double yB = p2->getY();
-	double zB = p2->getZ();
+	double xB = p2->getX();	double yB = p2->getY();	double zB = p2->getZ();
 	
 	double xC ,yC,zC;
 	
@@ -212,7 +213,8 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 	double d = -1;
 	Sphere *sph_tmp = NULL;
 	
-	
+	Point * contact;
+
 	for(int e=0;e < (int)this->shape.size();e++){
 		
 		//i = this->shape[e];
@@ -227,123 +229,127 @@ bool Scene::meet(Point * p1, Point * p2, bool verbose, Couleur * col) {
 		c =	(xA-xC)*(xA-xC)	+ (yA-yC)*(yA-yC) + (zA-zC)*(zA-zC)	- (r * r);	
 
 		delta = b*b - 4*a*c;
-		// std::cout << "delta" << delta << std::endl;
 		if (delta>0) {
 
 			r1 = (-b - sqrt(delta))/(2*a);
 			r2 = (-b + sqrt(delta))/(2*a);
 			
 			if (d==-1 || (d>=0 && r1<d)) {
-				if (r1>=0 && r1<r2) {
+				if (r1>=0.001 && r1<r2) {
 					d=r1;
 					sph_tmp = this->shape[e];
+					touche = true;
 				}
 			}
 			else if (d==-1 || (d>=0 && r2<d)) {
-				if (r2>=0 && r2<r1) {
+				if (r2>=0.001 && r2<r1) {
 					r2=d;
 					sph_tmp = this->shape[e];
+					touche = true;
 				}
 			}
 			
-			// std::cout << xA+r1*(xB-xA) << std::endl;
-			// std::cout << yA+r1*(yB-yA) << std::endl;
-			// std::cout << zA+r1*(zB-zA) << std::endl;
-			
-			// std::cout << xA+r2*(xB-xA) << std::endl;
-			// std::cout << yA+r2*(yB-yA) << std::endl;
-			// std::cout << zA+r2*(zB-zA) << std::endl;
-			// std::cout << "2 racine" << std::endl;
-			// std::cout << *this->shape[e]->getCol() ;
-
-			/*
-			col->setR(this->shape[e]->getCol()->getR());
-			col->setG(this->shape[e]->getCol()->getG());
-			col->setB(this->shape[e]->getCol()->getB());
-			*/
-
-			touche = true;
+			//touche = true;
 		}
 		else if (delta == 0 ) { 
 			
 			r1 = b/(2*a);
 			
 			if (d==-1 || (d>=0 && r1<d)) {
-				if (r1>=0) {
+				if (r1>=0.001) {
 					d=r1;
 					sph_tmp = this->shape[e];
+					touche = true;
 				}
 			}
-			//col->setR(this->shape[e]->getCol()->getR());
-			//col->setG(this->shape[e]->getCol()->getG());
-			//col->setB(this->shape[e]->getCol()->getB());
 			if(verbose) { std::cout << "1 racine" << std::endl; }
-
-			touche = true;
+			//touche = true;
 		}
 		else { 
 			if(verbose) { std::cout << "0 racine" << std::endl; } 
 		}
-		
+
 	}
 	
-	// quel situation on doit faire le calcul jeune homme ?
+	if (!touche){
+		col->setR(this->getCol()->getR());	col->setG(this->getCol()->getG());	col->setB(this->getCol()->getB());
+	}
 
-	Point * contact;
-	if (touche) {
-		
-		col->setR(0);
-		col->setG(0);
-		col->setB(0);
-		
+	else {
 		contact  = new Point(xA+d*(xB-xA), yA+d*(yB-yA), zA+d*(zB-zA));
 		for(int e=0;e < (int)this->shape.size();e++){
-			//if(this->shape[e] != sph_tmp){
-				if (this->shape[e]->between(contact, this->p_lum->getPt())) {
-					//std::cout << "X";
-					touche = false;
-					break;
-				}
-				//else touche = true;
-			//else std::cout << "_";
-			//}
+			if (this->shape[e]->between(contact, this->getLight()->getPt() )) {
+				col->setR(0);
+				col->setG(0);
+				col->setB(0);
+				eclaire = false;
+				break;
+			}
 		}
 	}
-	if(touche){
-		col->setR( /*fabs*/std::max(-1* Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt() ) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255, 0.0))   ;
-		col->setG( /*fabs*/std::max(-1* Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255, 0.0));
-		col->setB( /*fabs*/std::max(-1* Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255, 0.0));
-		//col->setG(sph_tmp->getCol()->getG());
-		//col->setB(sph_tmp->getCol()->getB());
-		//std::cout << std::endl;
+	
+
+
+	if(touche && eclaire){
+		//std::cout<<sph_tmp<<std::endl;
+		col->setR( std::max(-1 * (1-sph_tmp->getRef()) * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getR() * this->getLight()->getCol()->getR())/255 , 0.0));
+		col->setG( std::max(-1 * (1-sph_tmp->getRef()) * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getG() * this->getLight()->getCol()->getG())/255 , 0.0));
+		col->setB( std::max(-1 * (1-sph_tmp->getRef()) * Point::calculCos(sph_tmp->getPt(), contact, this->getLight()->getPt()) * (sph_tmp->getCol()->getB() * this->getLight()->getCol()->getB())/255 , 0.0));
 	}
-	//else std::cout << "|";
+
+	//std::cout<<"OKOKOKOK"<<std::endl;
+	
+	if (touche) {
+		double xI = contact->getX() - xB;
+		double yI = contact->getY() - yB;
+		double zI = contact->getZ() - zB;
+
+		double normeI = sqrt(xI*xI + yI*yI + zI*zI);
+		xI/=-normeI;
+		yI/=-normeI;
+		zI/=-normeI;
 
 	
-	//if (sph_tmp != NULL) {
-		//std::cout << "";
-		
-	//} else std::cout << "";
-	return touche;
+		double xN = contact->getX() - sph_tmp->getPt()->getX();
+		double yN = contact->getY() - sph_tmp->getPt()->getY();
+		double zN = contact->getZ() - sph_tmp->getPt()->getZ();
+
+		xN/=sph_tmp->getRayon();
+		yN/=sph_tmp->getRayon();
+		zN/=sph_tmp->getRayon();
+
+		double scalaireIN = xI*xN + yI*yN + zI*zN;
+	
+		double xV = contact->getX() + 2*scalaireIN*xN - xI;
+		double yV = contact->getY() + 2*scalaireIN*yN - yI;
+		double zV = contact->getZ() + 2*scalaireIN*zN - zI;
+	
+		Point * nouveauPoint = new Point(xV, yV, zV);
+		//std::cout << *nouveauPoint << std::endl;
+		Couleur* ct = meet(contact, nouveauPoint, false);
+		//std::cout << ct->getR() <<","<<ct->getG()<<","<<ct->getB()<<std::endl;
+		if ((ct->getR()>0 || ct->getG()>0 || ct->getB()>0) && sph_tmp->getRef()>0) {
+			col->add(sph_tmp->getRef(),ct);
+		}	
+	}
+	
+	
+	//std::cout << "lol" << std::endl;
+	return col;
 }
 
 void Scene::traceRay(bool verbose)
 {
-	Couleur *temp =  new Couleur();
+	Couleur *temp =  NULL;
 	for(int i = 0; i < this->getScreen()->getRes() ; i++){
         for(int j = 0; j < this->getScreen()->getRes() ; j++){
-        	if ( this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose, temp) )  
-        	{
-        		if(verbose) { std::cout << "touche une sphere en [" << i << "][" << j << "]" << std::endl; }
+
+			temp  = this->meet( this->getCam()->getPt() , this->getScreen()->getPixel(i,j)->getPt() , verbose);	
+        	
+        		//std::cout << "touche une sphere en [" << i << "][" << j << "]"<< std::endl; 
         		this->getScreen()->getPixel(i,j)->getCol()->setR(temp->getR());
         		this->getScreen()->getPixel(i,j)->getCol()->setG(temp->getG());
         		this->getScreen()->getPixel(i,j)->getCol()->setB(temp->getB());
-        	}
-        	else
-        	{
-        		if(verbose) { std::cout << "touche pas de sphere en [" << i << "][" << j << "] donc col : " << *this->getCol() << std::endl; }
-        		this->getScreen()->getPixel(i,j)->setCol(this->getCol());
-        	}
         }
 	}       
 }
